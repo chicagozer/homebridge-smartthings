@@ -119,9 +119,12 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
     this.log.debug('Received getCurrentState() event for ' + this.name);
 
+    return this.currentState;
+/*
     return new Promise<CharacteristicValue>((resolve) => {
       resolve(this.currentState);
     });
+*/
   }
 
 
@@ -141,7 +144,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   async getCurrentStateInternal(): Promise<CharacteristicValue> {
     // if you need to return an error to show the device as "Not Responding" in the Home app:
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
-    this.log.debug('Received getCurrentState() event for ' + this.name);
+    this.log.debug('Received getCurrentInternalState() event for ' + this.name);
 
     let lockStatus = 0;
     return new Promise<CharacteristicValue>((resolve, reject) => {
@@ -166,7 +169,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
               break;
             }
             default: {
-              lockStatus = 3;
+              lockStatus = this.platform.Characteristic.LockCurrentState.UNKNOWN;
             }
           }
           resolve(lockStatus);
