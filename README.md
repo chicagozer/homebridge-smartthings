@@ -12,6 +12,8 @@ This is yet another smartthings plugin for Homebridge.  This requires no access 
 require a lot of work to install.  It will discover devices automatically as well as unregister devices that are removed
 from your smarttthings network.  This is currently under development.
 
+Forked from iklein99/homebridge-smartthings to test auto-polling
+
 ## New in version 1.1.7
 
 Added support for Window Shades that support the Window Shade Level command.

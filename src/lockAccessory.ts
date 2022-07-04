@@ -29,7 +29,6 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
 
 
     super(platform, accessory);
-    this.log.debug('### entered constructor');
 
     // this.log = platform.log;
 
@@ -53,7 +52,6 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
 
 
   checkCurrentState() {
-    this.log.debug('### checking current state');
     this.getCurrentStateInternal.bind(this)().then(value => {
       if (this.currentState  !== value as number) {
         this.currentState = value as number;
@@ -119,12 +117,10 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
     this.log.debug('Received getCurrentState() event for ' + this.name);
 
-    return this.currentState;
-    /*
+    //return this.currentState;
     return new Promise<CharacteristicValue>((resolve) => {
       resolve(this.currentState);
     });
-*/
   }
 
 
