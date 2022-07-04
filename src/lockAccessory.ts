@@ -12,6 +12,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   private targetState = this.platform.Characteristic.LockTargetState.UNSECURED;
   private timer;
   private pollTry = 0;
+  private currentState = this.platform.Characteristic.LockCurrentState.UNKNOWN;
 
   // private log: Logger;
 
@@ -43,8 +44,18 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     this.service.getCharacteristic(platform.Characteristic.LockTargetState)
       .onSet(this.setTargetState.bind(this))
       .onGet(this.getTargetState.bind(this));
+
+    setInterval(this.checkTargetState.bind(this),5000);
   }
 
+
+  checkTargetState() {
+     this.log.debug('checking target state');
+     this.getCurrentStateInternal.bind(this)().then(value => {
+        this.service.updateCharacteristic(this.platform.Characteristic.LockCurrentState, value);
+        this.log.debug('target state is ' + value);
+     });
+  }
 
   /**
    * Handle "SET" requests from HomeKit
@@ -70,7 +81,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
       this.log.debug('onSet(' + value + ') SUCCESSFUL for ' + this.name);
       this.pollTry = 0;
       this.log.debug('Polling lock status...');
-      this.timer = setInterval(this.pollLockState = this.pollLockState.bind(this), 1000, this, value);
+      this.timer = setInterval(this.pollLockState = this.pollLockState.bind(this), this.platform.config.pollingInterval ? this.platform.config.pollingInterval : 1000, this, value);
     }).catch(reason => {
       this.log.error('onSet(' + value + ') FAILED for ' + this.name + ': reason ' + reason);
       throw(new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE));
@@ -94,6 +105,18 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     return this.targetState;
   }
 
+
+   async getCurrentState(): Promise<CharacteristicValue> {
+    // if you need to return an error to show the device as "Not Responding" in the Home app:
+    // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
+    this.log.debug('Received getCurrentState() event for ' + this.name);
+
+    return new Promise<CharacteristicValue>((resolve, reject) => {
+       resolve(this.currentState)
+     });
+   }
+
+
   /**
    * Handle the "GET" requests from HomeKit
    * These are sent when HomeKit wants to know the current state of the accessory, for example, checking if a Light bulb is on.
@@ -107,7 +130,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
    * @example
    * this.service.updateCharacteristic(this.platform.Characteristic.On, true)
    */
-  async getCurrentState(): Promise<CharacteristicValue> {
+  async getCurrentStateInternal(): Promise<CharacteristicValue> {
     // if you need to return an error to show the device as "Not Responding" in the Home app:
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
     this.log.debug('Received getCurrentState() event for ' + this.name);
