@@ -120,7 +120,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     this.log.debug('Received getCurrentState() event for ' + this.name);
 
     return this.currentState;
-/*
+    /*
     return new Promise<CharacteristicValue>((resolve) => {
       resolve(this.currentState);
     });
