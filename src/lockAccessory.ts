@@ -13,6 +13,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   private timer;
   private pollTry = 0;
   private currentState = this.platform.Characteristic.LockCurrentState.UNKNOWN;
+  private pollingInterval = this.platform.config.pollingInterval ? this.platform.config.pollingInterval : 1000
 
   // private log: Logger;
 
@@ -45,18 +46,19 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
       .onSet(this.setTargetState.bind(this))
       .onGet(this.getTargetState.bind(this));
 
-    setInterval(this.checkTargetState.bind(this), 5000);
+    setTimeout(this.checkCurrentState.bind(this), this.pollingInterval);
   }
 
 
-  checkTargetState() {
-    this.log.debug('checking target state');
+  checkCurrentState() {
+    this.log.debug('checking current state');
     this.getCurrentStateInternal.bind(this)().then(value => {
       if (this.currentState  !== value) {
         this.currentState = value as number;
         this.service.updateCharacteristic(this.platform.Characteristic.LockCurrentState, value);
         this.log.debug('target state is ' + value);
       }
+    setTimeout(this.checkCurrentState.bind(this), this.pollingInterval);
     });
   }
 
