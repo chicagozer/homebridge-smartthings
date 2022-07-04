@@ -53,7 +53,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     this.log.debug('checking target state');
     this.getCurrentStateInternal.bind(this)().then(value => {
       if (this.currentState  !== value) {
-        this.currentState = value;
+        this.currentState = value as number;
         this.service.updateCharacteristic(this.platform.Characteristic.LockCurrentState, value);
         this.log.debug('target state is ' + value);
       }
