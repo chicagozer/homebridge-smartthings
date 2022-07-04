@@ -81,7 +81,8 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
       this.log.debug('onSet(' + value + ') SUCCESSFUL for ' + this.name);
       this.pollTry = 0;
       this.log.debug('Polling lock status...');
-      this.timer = setInterval(this.pollLockState = this.pollLockState.bind(this), this.platform.config.pollingInterval ? this.platform.config.pollingInterval : 1000, this, value);
+      this.timer = setInterval(this.pollLockState = this.pollLockState.bind(this),
+        this.platform.config.pollingInterval ? this.platform.config.pollingInterval : 1000, this, value);
     }).catch(reason => {
       this.log.error('onSet(' + value + ') FAILED for ' + this.name + ': reason ' + reason);
       throw(new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE));
@@ -111,7 +112,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
     this.log.debug('Received getCurrentState() event for ' + this.name);
 
-    return new Promise<CharacteristicValue>((resolve, reject) => {
+    return new Promise<CharacteristicValue>((resolve) => {
       resolve(this.currentState);
     });
   }
