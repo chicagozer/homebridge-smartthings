@@ -27,7 +27,9 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     accessory: PlatformAccessory,
   ) {
 
+
     super(platform, accessory);
+    this.log.debug('### entered constructor');
 
     // this.log = platform.log;
 
@@ -51,12 +53,12 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
 
 
   checkCurrentState() {
-    this.log.debug('checking current state');
+    this.log.debug('### checking current state');
     this.getCurrentStateInternal.bind(this)().then(value => {
-      if (this.currentState  !== value) {
+      if (this.currentState  !== value as number) {
         this.currentState = value as number;
         this.service.updateCharacteristic(this.platform.Characteristic.LockCurrentState, value);
-        this.log.debug('target state is ' + value);
+        this.log.debug('updated state to ' + value);
       }
       setTimeout(this.checkCurrentState.bind(this), this.pollingInterval);
     });
