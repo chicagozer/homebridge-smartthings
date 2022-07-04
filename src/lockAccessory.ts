@@ -45,16 +45,16 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
       .onSet(this.setTargetState.bind(this))
       .onGet(this.getTargetState.bind(this));
 
-    setInterval(this.checkTargetState.bind(this),5000);
+    setInterval(this.checkTargetState.bind(this), 5000);
   }
 
 
   checkTargetState() {
-     this.log.debug('checking target state');
-     this.getCurrentStateInternal.bind(this)().then(value => {
-        this.service.updateCharacteristic(this.platform.Characteristic.LockCurrentState, value);
-        this.log.debug('target state is ' + value);
-     });
+    this.log.debug('checking target state');
+    this.getCurrentStateInternal.bind(this)().then(value => {
+      this.service.updateCharacteristic(this.platform.Characteristic.LockCurrentState, value);
+      this.log.debug('target state is ' + value);
+    });
   }
 
   /**
@@ -106,15 +106,15 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   }
 
 
-   async getCurrentState(): Promise<CharacteristicValue> {
+  async getCurrentState(): Promise<CharacteristicValue> {
     // if you need to return an error to show the device as "Not Responding" in the Home app:
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
     this.log.debug('Received getCurrentState() event for ' + this.name);
 
     return new Promise<CharacteristicValue>((resolve, reject) => {
-       resolve(this.currentState)
-     });
-   }
+      resolve(this.currentState);
+    });
+  }
 
 
   /**
