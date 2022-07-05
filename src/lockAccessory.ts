@@ -56,6 +56,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     this.getCurrentStateInternal.bind(this)().then(value => {
       if (this.currentState  !== value as number) {
         this.currentState = value as number;
+        this.targetState = value as number;
         this.service.updateCharacteristic(this.platform.Characteristic.LockCurrentState, value);
         this.log.info('updated state to ' + value + ' for ' + this.name);
       }
@@ -96,7 +97,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   }
 
   private async pollLockState(t: LockPlatformAccessory, targetValue: CharacteristicValue) {
-    this.getCurrentState().then(value => {
+    this.getCurrentStateInternal().then(value => {
       if (value === targetValue) {
         this.service.updateCharacteristic(t.platform.Characteristic.LockCurrentState, value);
         clearInterval(this.timer);
@@ -109,7 +110,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   }
 
   getTargetState(): number {
-    this.log.info('Received getTargetState() event for ' + this.name);
+    this.log.info('Received getTargetState() event [' + this.targetState + '] for ' + this.name);
     return this.targetState;
   }
 
@@ -117,7 +118,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   async getCurrentState(): Promise<CharacteristicValue> {
     // if you need to return an error to show the device as "Not Responding" in the Home app:
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
-    this.log.info('Received getCurrentState() event for ' + this.name);
+    this.log.info('Received getCurrentState() event [' + this.currentState + '] for ' + this.name);
 
     return this.currentState;
     /*return new Promise<CharacteristicValue>((resolve) => {
@@ -170,6 +171,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
               lockStatus = this.platform.Characteristic.LockCurrentState.UNKNOWN;
             }
           }
+          this.currentState = lockStatus;
           resolve(lockStatus);
         } else {
           this.log.error('onGet() FAILED for ' + this.name + '. Undefined value');
