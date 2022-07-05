@@ -56,7 +56,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
       if (this.currentState  !== value as number) {
         this.currentState = value as number;
         this.service.updateCharacteristic(this.platform.Characteristic.LockCurrentState, value);
-        this.log.debug('updated state to ' + value);
+        this.log.info('updated state to ' + value + ' for ' + this.name);
       }
       setTimeout(this.checkCurrentState.bind(this), this.pollingInterval);
     });
@@ -70,7 +70,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
 
     // TODO: Modify me!
 
-    this.log.debug('Received setTargetState(' + value + ') event for ' + this.name);
+    this.log.info('Received setTargetState(' + value + ') event for ' + this.name);
 
     this.targetState = value as number;
 
@@ -83,7 +83,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
       capability: 'lock',
       command: value ? 'lock' : 'unlock',
     }])).then(() => {
-      this.log.debug('onSet(' + value + ') SUCCESSFUL for ' + this.name);
+      this.log.info('onSet(' + value + ') SUCCESSFUL for ' + this.name);
       this.pollTry = 0;
       this.log.debug('Polling lock status...');
       this.timer = setInterval(this.pollLockState = this.pollLockState.bind(this),
@@ -115,7 +115,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   async getCurrentState(): Promise<CharacteristicValue> {
     // if you need to return an error to show the device as "Not Responding" in the Home app:
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
-    this.log.debug('Received getCurrentState() event for ' + this.name);
+    this.log.info('Received getCurrentState() event for ' + this.name);
 
     //return this.currentState;
     return new Promise<CharacteristicValue>((resolve) => {
