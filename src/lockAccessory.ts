@@ -58,6 +58,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
         this.currentState = value as number;
         this.targetState = value as number;
         this.service.updateCharacteristic(this.platform.Characteristic.LockCurrentState, value);
+        this.service.updateCharacteristic(this.platform.Characteristic.LockTargetState, value);
         this.log.info('updated state to ' + value + ' for ' + this.name);
       }
       setTimeout(this.checkCurrentState.bind(this), this.pollingInterval);
