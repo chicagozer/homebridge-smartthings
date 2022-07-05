@@ -12,7 +12,8 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   private targetState = this.platform.Characteristic.LockTargetState.UNSECURED;
   private timer;
   private pollTry = 0;
-  private currentState = this.platform.Characteristic.LockCurrentState.UNKNOWN;
+  // private currentState = this.platform.Characteristic.LockCurrentState.UNKNOWN;
+  private currentState = this.platform.Characteristic.LockCurrentState.UNSECURED;
   private pollingInterval = this.platform.config.pollingInterval ? this.platform.config.pollingInterval : 1000;
 
   // private log: Logger;
@@ -108,6 +109,7 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
   }
 
   getTargetState(): number {
+    this.log.info('Received getTargetState() event for ' + this.name);
     return this.targetState;
   }
 
@@ -117,10 +119,10 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
     this.log.info('Received getCurrentState() event for ' + this.name);
 
-    //return this.currentState;
-    return new Promise<CharacteristicValue>((resolve) => {
+    return this.currentState;
+    /*return new Promise<CharacteristicValue>((resolve) => {
       resolve(this.currentState);
-    });
+    });*/
   }
 
 
