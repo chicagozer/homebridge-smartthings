@@ -87,9 +87,9 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
     }])).then(() => {
       this.log.info('onSet(' + value + ') SUCCESSFUL for ' + this.name);
       this.pollTry = 0;
-      this.log.debug('Polling lock status...');
-      this.timer = setInterval(this.pollLockState = this.pollLockState.bind(this),
-        this.platform.config.pollingInterval ? this.platform.config.pollingInterval : 1000, this, value);
+      //    this.log.debug('Polling lock status...');
+      //    this.timer = setInterval(this.pollLockState = this.pollLockState.bind(this),
+      //      this.platform.config.pollingInterval ? this.platform.config.pollingInterval : 1000, this, value);
     }).catch(reason => {
       this.log.error('onSet(' + value + ') FAILED for ' + this.name + ': reason ' + reason);
       throw(new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE));
@@ -171,7 +171,6 @@ export class LockPlatformAccessory extends BasePlatformAccessory {
               lockStatus = this.platform.Characteristic.LockCurrentState.UNKNOWN;
             }
           }
-          this.currentState = lockStatus;
           resolve(lockStatus);
         } else {
           this.log.error('onGet() FAILED for ' + this.name + '. Undefined value');
